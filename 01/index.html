@@ -179,6 +179,7 @@ var selector = d3.select("#ui-container")
       .text(function(d) { return d;})
 });
 
+var dots;
 function update(index){
 
 var subdata = [];
@@ -191,10 +192,13 @@ if(d.DRG == index){
 
      });
 
+dots = svg.selectAll(".dot")
+      .data(subdata);
+
+dots.exit().remove();
   // draw dots
-  svg.selectAll(".dot")
-      .data(subdata)
-    .enter().append("circle")
+
+  dots.enter().append("circle")
       .attr("class", "dot")
       .attr("r", function(d){ return d.TotalDischarges*0.02;  })
       .attr("cx", xMap)
