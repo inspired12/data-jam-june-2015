@@ -121,16 +121,36 @@ d3.csv("psychoses.csv", function(error, data) {
       .style("text-anchor", "end")
       .text("Average Charges Billed"); // Average Covered Charges
 
+/*
+  //track the mouse position
+  var coordinates = [0, 0];
+  coordinates = d3.mouse(this);
+  var xMouse = coordinates[0];
+  var yMouse = coordinates[1];
+*/
+
   // draw dots
-  svg.selectAll(".dot")
+  var dots = svg.selectAll(".dot")
       .data(data)
     .enter().append("circle")
-      .attr("class", "dot")
+      .attr({
+          'r': 5,
+          'cx': width/2,
+          'cy': height/2,
+          'opacity': 0,
+          "class": "dot"
+        })
+
+
+  dots.transition()
+      .delay(function (d,i){ return 2000 + (i * 30);}).ease('quad').duration(500)
       .attr("r", function(d){ return d.TotalDischarges*0.02;  })
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) { return color(cValue(d));}) 
-      .on("mouseover", function(d) {
+      .style("opacity", 0.7)
+     
+  dots.on("mouseover", function(d) {
           tooltip.transition()
                .duration(200)
                .style("opacity", .9);
@@ -143,7 +163,8 @@ d3.csv("psychoses.csv", function(error, data) {
           tooltip.transition()
                .duration(500)
                .style("opacity", 0);
-      });
+      }); 
+/*
 
   // draw legend
   var legend = svg.selectAll(".legend")
@@ -166,7 +187,11 @@ d3.csv("psychoses.csv", function(error, data) {
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .text(function(d) { return d;})
+*/
+
 });
+
+
 
 </script>
 </body>
