@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8">
     <title>D3 Demo: Linear scales</title>
-    <script type="text/javascript" src="../d3/d3.v3.js"></script>
+    <script type="text/javascript" src="js/d3.min.js"></script>
     <style type="text/css">
         /* No style rules here yet */       
     </style>
@@ -11,6 +11,7 @@
     <script type="text/javascript">
 
         //Width and height
+
         var w = 900;
         var h = 500;
         var padding = 20;
@@ -18,21 +19,24 @@
 
 
         d3.csv("HospitalPrices.csv", function(data) {
+
             dataset=data
+            console.log(dataset);
+
         });
 
         //Create scale functions
         var xScale = d3.scale.linear()
-                             .domain([0, d3.max(dataset, function(d) { return d[0]; })])
-                             .range([padding, w - padding * 2]);
+                 .domain([0, d3.max(dataset, function(d) { return d[0]; })])
+                 .range([padding, w - padding * 2]);
 
         var yScale = d3.scale.linear()
-                             .domain([0, d3.max(dataset, function(d) { return d[1]; })])
-                             .range([h - padding, padding]);
+                 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+                 .range([h - padding, padding]);
 
         var rScale = d3.scale.linear()
-                             .domain([0, d3.max(dataset, function(d) { return d[1]; })])
-                             .range([2, 5]);
+                 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+                 .range([2, 5]);
 
         //Create SVG element
         var svg = d3.select("body")
