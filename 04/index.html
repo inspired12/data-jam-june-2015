@@ -27,7 +27,7 @@ body {
 
 .tooltip {
   position: absolute;
-  width: 200px;
+  width: 300px;
   height: 28px;
   pointer-events: none;
   background:white;
@@ -36,7 +36,7 @@ body {
 </style>
 <body>
 <div class="ui" id="ui-container">
-	<h1 class="xlarge oswald">CMS Medicare data (FY 2011)</h1>
+	<!-- <h1 class="xlarge oswald">CMS Medicare data (FY 2011)</h1> -->
 
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
@@ -45,7 +45,7 @@ body {
 <script>
 var margin = {top: 20, right: 20, bottom: 30, left: 60},
     width = window.innerWidth*0.9 - margin.left - margin.right,
-    height = window.innerHeight*0.7 - margin.top - margin.bottom;
+    height = window.innerHeight*0.9 - margin.top - margin.bottom;
 
 /* 
  * value accessor - returns the value to encode for a given data object.
@@ -93,7 +93,7 @@ var tooltip = d3.select("body").append("div")
     .style("opacity", 0);
 
 // load data
-d3.csv("data/HospitalSmall.csv", function(error, _data) {
+d3.csv("data.csv", function(error, _data) {
 
     data = _data;
     // change string (from CSV) into number format
@@ -104,7 +104,7 @@ d3.csv("data/HospitalSmall.csv", function(error, _data) {
     //  console.log(d);
   });
 
-areas.push("Choose a Department");
+areas.push("Choose a Diagnoses Related Group");
 
 data.forEach(function(link) {
     console.log(link);
@@ -160,57 +160,35 @@ var selector = d3.select("#ui-container")
       .style("text-anchor", "end")
       .text("Average Charges Billed"); // Average Covered Charges
 
-/*
-  //track the mouse position
-  var coordinates = [0, 0];
-  coordinates = d3.mouse(this);
-  var xMouse = coordinates[0];
-  var yMouse = coordinates[1];
-*/
 
-/*
-  // draw legend
-  var legend = svg.selectAll(".legend")
-      .data(color.domain())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  // draw legend colored rectangles
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", color);
-
-  // draw legend text
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d;})
-});
-*/
-var dots;
 function update(index){
 
-var subdata = [];
-
-      data.forEach(function(d) {
-if(d.DRG == index){
-        subdata.push(d);
-}
-
-
-     });
-
-dots = svg.selectAll(".dot")
-      .data(subdata);
-
-dots.exit().remove();
+  var subdata = [];
+  
+  data.forEach(function(d) {
+    if(d.DRG == index){
+      subdata.push(d);
+    }
+  });
+  
+  var dots = svg.selectAll(".dot")
+        .data(subdata);
+  
+  dots.exit().remove();
   // draw dots
 
+  // update the scales
+  xScale.domain([d3.min(subdata, xValue)-1, d3.max(subdata, xValue)+1]);
+  yScale.domain([d3.min(subdata, yValue)-1, d3.max(subdata, yValue)+1]);
+
+  d3.selectAll(".x.axis")
+    .transition().delay(400).ease('quad').duration(500)
+    .call(xAxis);
+
+  d3.selectAll(".y.axis")
+    .transition().delay(400).ease('cubic').duration(500)
+    .call(yAxis);
+  
   dots.enter().append("circle")
       .attr({
           'r': 5,
@@ -221,8 +199,8 @@ dots.exit().remove();
       })
 
   dots.transition()
-      .delay(function (d,i){ return 2000 + (i * 30);}).ease('quad').duration(500)
-      .attr("r", function(d){ return d.TotalDischarges*0.4;  })
+      .delay(function (d,i){ return 700 + (i * 30);}).ease('quad').duration(500)
+      .attr("r", function(d){ return d.TotalDischarges*0.1;  })
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) { return color(cValue(d));}) 
@@ -233,8 +211,7 @@ dots.exit().remove();
           tooltip.transition()
                .duration(200)
                .style("opacity", .9);
-          tooltip.html(d["Name"] + "<br/> (" + "billed " + format(yValue(d)) + ", " + "paid " +  format(xValue(d))
-              + ")")
+          tooltip.html(d["Name"] + "<br/>" + "billed " + format(yValue(d)) + ", " + "paid " +  format(xValue(d)) + "<br/>" + d.TotalDischarges + " total discharges")
                .style("left", (d3.event.pageX + 15) + "px")
                .style("top", (d3.event.pageY - 45) + "px");
       })
