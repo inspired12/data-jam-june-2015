@@ -214,6 +214,9 @@ function update(index){
           tooltip.html(d["Name"] + "<br/>" + "billed " + format(yValue(d)) + ", " + "paid " +  format(xValue(d)) + "<br/>" + d.TotalDischarges + " total discharges")
                .style("left", (d3.event.pageX + 15) + "px")
                .style("top", (d3.event.pageY - 45) + "px");
+               // exploring an alternate method of tooltip placement
+               //.style("left", (d3.event.pageX + d.TotalDischarges*0.1*2) + "px")
+               //.style("top", (d3.event.pageY - d.TotalDischarges*0.1*2) + "px");               
       })
       .on("mouseout", function(d) {
           tooltip.transition()
